@@ -1,0 +1,38 @@
+INSERT INTO loan_types (loan_type_name)
+SELECT DISTINCT Loan_Theme_Type FROM loan_themes_by_region;
+
+INSERT INTO repayment_trends (region, time_period, total_loan_amount, repaid_amount, remaining_amount)
+SELECT region, DATE_FORMAT(funded_time, '%Y-%m') AS time_period, SUM(loan_amount) AS total_loan_amount,
+       SUM(funded_amount) AS repaid_amount, SUM(loan_amount - funded_amount) AS remaining_amount
+FROM kiva_loans
+GROUP BY region, DATE_FORMAT(funded_time, '%Y-%m');
+
+INSERT INTO fundraiser_demographics (fundraiser_name, region, country, time_of_year)
+SELECT Field_Partner_Name, loan_themes_by_region.region, loan_themes_by_region.country, DATE_FORMAT(kiva_loans.posted_time, '%Y-%m') AS time_of_year
+FROM loan_themes_by_region
+JOIN kiva_loans;
+
+<!-- ... -->
+
+<div id="app">
+  <img src="..." />
+
+  <section id="event-details-container">
+     <h1>Firebase Meetup</h1>
+
+     <p><i class="material-icons">calendar_today</i> October 30</p>
+     <p><i class="material-icons">location_city</i> San Francisco</p>
+
+  </section>
+
+  <hr>
+
+  <section id="firebaseui-auth-container"></section>
+
+  <section id="description-container">
+     <h2>What we'll be doing</h2>
+     <p>Join us for a day full of Firebase Workshops and Pizza!</p>
+  </section>
+</div>
+
+<!-- ... -->
